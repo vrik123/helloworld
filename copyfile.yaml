@@ -1,0 +1,50 @@
+-
+  name: Test Connectivity to target server
+  hosts: webserver
+  become: yes
+  become_user: root
+  tasks:
+    - name: Creates directory
+      file:
+         path: /var/www/inc
+         state: directory
+         mode: 0777
+    - name: Ansible create file if it doesn't exist example
+      file:
+        path: "/var/www/inc/dbinfo.inc"
+        state: touch
+    - name: Creates content
+      copy:
+        content: |
+                 <?php
+                 define('DB_SERVER', 'database-1.cmqaetb0osxr.us-east-1.rds.amazonaws.com');
+                 define('DB_USERNAME', 'admin');
+                 define('DB_PASSWORD', 'admin123');
+                 define('DB_DATABASE', 'sample');
+                 ?>
+        dest: /var/www/inc/dbinfo.inc
+        mode: 0777
+    - name: Copy file to ansible target
+      copy:
+        src: /home/ubuntu/SamplePHP.php
+        dest: /var/www/html
+
+        name: Test Connectivity to target server
+  hosts: target2
+  become: yes
+  become_user: root
+  tasks:
+    - name: Copy file to ansible target
+      copy:
+        src: /home/ubuntu/test/SamplePHP.php
+        dest: /var/www/html
+	- name: Copy file to ansible target
+      copy:
+        src: /home/ubuntu/test/dbinfo.inc
+        dest: /var/www/inc
+	
+
+		
+output "instance-id"{
+	value = aws_launch_configuration.example-launchconfig.id
+}
